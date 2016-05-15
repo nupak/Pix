@@ -1,2 +1,3 @@
 # Pix
-project Pixhawk
+Заливаю версию с самого GITHub
+
