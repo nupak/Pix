@@ -129,6 +129,7 @@ set(config_module_list
 	lib/tailsitter_recovery
 	lib/DriverFramework/framework
 	platforms/nuttx
+        examples/px4_simple_app
 
 	# had to add for cmake, not sure why wasn't in original config
 	platforms/common 
