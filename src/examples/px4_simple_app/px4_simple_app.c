@@ -50,23 +50,36 @@
 #include <uORB/topics/vehicle_attitude.h>
 
 __EXPORT int px4_simple_app_main(int argc, char *argv[]);
-
 int px4_simple_app_main(int argc, char *argv[])
 {
     PX4_INFO("Let's start");
+    char c;
     int sensor_sub_fd = orb_subscribe(ORB_ID(sensor_accel));
     orb_set_interval(sensor_sub_fd, 1000);
-/*  struct vehicle_attitude_s att;
-     memset(&att, 0, sizeof(att));                                              // доступность для других программ?? Нужно ли?
-     orb_advert_t att_pub = orb_advertise(ORB_ID(vehicle_attitude), &att);         */
-
+while ((c = getchar()) != 'q'){ //обязательно через аргументы командной строки? или это тоже вариант?
 
                 struct sensor_accel_s raw;
 
                 orb_copy(ORB_ID(sensor_accel), sensor_sub_fd, &raw);
-                double tanga1=atan(raw.z/raw.x);
-                double tanga2=atan(raw.z/raw.y);
+                double a1,a2,osx,osy,osz;
+
+                 osx=raw.x; osy=raw.y; osz=raw.z;
+                 if (osx<0)
+                      if (osz>=0) a1=30;
+                      else a1 =-30;
+                 else  a1=atan(osz/osx);
+                      if (a1>30) a1=30;//если угол
+                      else             //вне диапазона [-30;30]
+                        if (a1<-30) a1=-30;
+                 // ///////////////////////////////////////////////
+                 if (osy<0)
+                      if (osz>0) a2=30;
+                       else a2=-30;
+                 else  a2=atan(osz/osy);
+                    if (a2>30) a2=30;             //если угол
+                         else  if (a2<-30) a2=-30;//вне диапазона [-30;30]
+
                 PX4_WARN("[px4_simple_app] Accelerometer:\t%8.4f\t%8.4f",
-                      tanga1,tanga2);
+                      a1,a2);}
     return 0;
 }
